@@ -1,0 +1,18 @@
+#Mount 2 nvme disks to one folder 
+
+sudo pvcreate /dev/nvme1n1
+sudo pvcreate /dev/nvme0n1
+
+sudo vgcreate myvg /dev/nvme1n1 /dev/nvme0n1
+
+sudo lvcreate -n mylv -l 100%FREE myvg
+
+sudo lvcreate -n mylv -l 100%FREE myvg
+
+sudo mkfs.ext4 /dev/myvg/mylv
+
+sudo mkdir /opt/mydisk
+sudo mount /dev/myvg/mylv /opt/mydisk
+
+sudo nano /etc/fstab
+/dev/myvg/mylv /opt/mydisk ext4 defaults 0 0
