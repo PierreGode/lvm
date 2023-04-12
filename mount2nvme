@@ -1,18 +1,21 @@
-#Mount 2 nvme disks to one folder 
-
+# Create physical volumes on both disks
 sudo pvcreate /dev/nvme1n1
 sudo pvcreate /dev/nvme0n1
 
+# Create a volume group using the physical volumes
 sudo vgcreate myvg /dev/nvme1n1 /dev/nvme0n1
 
+# Create a logical volume using the entire space of the volume group
 sudo lvcreate -n mylv -l 100%FREE myvg
 
-sudo lvcreate -n mylv -l 100%FREE myvg
-
+# Format the logical volume with ext4 file system
 sudo mkfs.ext4 /dev/myvg/mylv
 
+# Create a mount point directory
 sudo mkdir /opt/mydisk
+
+# Mount the logical volume to the mount point directory
 sudo mount /dev/myvg/mylv /opt/mydisk
 
-sudo nano /etc/fstab
-/dev/myvg/mylv /opt/mydisk ext4 defaults 0 0
+# Make the mount permanent by adding an entry to the fstab file
+echo "/dev/myvg/mylv /opt/mydisk ext4 defaults 0 0" | sudo tee -a /etc/fstab
